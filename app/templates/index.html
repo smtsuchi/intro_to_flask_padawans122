@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Welcome to my Flask App!</h1>
+        <h2>Testing the new line</h2>
+        <h3>yo</h3>
+        {{ peeps }}
+        {% for p in peeps  %}
+            {% if p == 'Shoha' or p == 'Sarah' %}
+                <div class="card text-center">
+                    <div class="card-header">
+                        <b>
+                            {{ p }}
+                        </b>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card text-center">
+                    <div class="card-header">
+                        {{ p }}
+                    </div>
+                </div>      
+            {% endif %}
+            
+        {% endfor %}
+
+        {% for poke in pokemons %}
+            <div class="card" style="width: 18rem;">
+                <img src='{{ poke["image"] }}' class="card-img-top" alt="...">
+                <div class="card-body">
+                <p class="card-text">
+                    {{ poke.name }}
+                </p>
+                </div>
+            </div>
+        {% endfor %}
+{% endblock %}
+
+{% block title %}
+Home Page
+{% endblock %}
