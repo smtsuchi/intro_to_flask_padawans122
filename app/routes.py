@@ -1,6 +1,7 @@
-from flask import render_template
+from flask import render_template, request, redirect, url_for
 from app import app
-
+from .forms import SignUpForm
+from .models import User, Post , db
 
 @app.route('/')
 def home_page():
@@ -21,14 +22,27 @@ def home_page():
 def contact_page():
     return render_template('contact.html')
 
-@app.route('/test')
-def test_page():
-    return {
-        'test': 'testing'
-    }
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
 
-@app.route('/test2')
-def test_page2():
-    return {
-        'test': 'testing'
-    }
+@app.route('/signup', methods=["GET", "POST"])
+def signup_page():
+    form = SignUpForm()
+    if request.method == "POST":
+        if form.validate():
+            username = form.username.data
+            email = form.email.data
+            password = form.password.data
+            
+            #add user to database
+            user = User(username, email, password)
+
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('login_page'))
+        
+
+    return render_template('signup.html', form = form)
+
+
