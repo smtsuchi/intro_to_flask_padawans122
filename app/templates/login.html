@@ -3,7 +3,14 @@
 {% block content %}
 <h1>This is the login page</h1>
 
+<form class="col-4 border p-4" method="POST">
+    {{ form.hidden_tag() }}
 
+    {{ form.username(class='form-control', placeholder='Username') }}
+    {{ form.password(class='form-control', placeholder='Password') }}
+
+    {{ form.submit(class='btn btn-primary') }}
+</form>
 
 
 

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Create a post</h1>
+
+<form class="col-4 border p-4" method="POST">
+    {{ form.hidden_tag() }}
+
+    {{ form.title(class='form-control', placeholder='Title') }}
+    {{ form.caption(class='form-control', placeholder='Add a caption (optional)') }}
+    {{ form.img_url(class='form-control', placeholder='Image URL') }}
+
+    {{ form.submit(class='btn btn-primary') }}
+</form>
+
+
+
+
+
+{% endblock %}
