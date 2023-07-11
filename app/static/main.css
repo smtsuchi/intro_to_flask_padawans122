@@ -1,3 +1,11 @@
 #shoha {
     background-color: dodgerblue;
 }
+.my-heart{
+    color: tomato;
+    text-decoration: none;
+}
+.my-heart:hover{
+    color: tomato;
+    opacity: .7;
+}

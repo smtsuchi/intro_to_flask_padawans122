@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from app import app
 from .forms import LoginForm, SignUpForm, PostForm
 from .models import User, Post , db
@@ -24,14 +24,15 @@ def login_page():
             if user:
                 if user.password == password:
                     login_user(user)
+                    flash('Successfully logged in.', 'success')
                     return redirect(url_for('home_page'))
                 else:
-                    print('incorrect password')
+                    flash('Incorrect username/password.', 'danger')
             else:
-                print('That username doesnt exist')
+                flash('Incorrect username.', 'danger')
+        else:
+            flash('An error has occurred. Please submit a valid form', 'danger')           
             
-            
-        
     return render_template('login.html', form=form)
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -48,8 +49,9 @@ def signup_page():
 
             db.session.add(user)
             db.session.commit()
+            flash('Successfully created user.', 'success')
             return redirect(url_for('login_page'))
-        
+        flash('An error has occurred. Please submit a valid form', 'danger')
 
     return render_template('signup.html', form = form)
 
@@ -90,7 +92,7 @@ def single_post_page(post_id):
     post = Post.query.filter_by(id = post_id).first()   # these lines are indetical 
     post = Post.query.get(post_id)                      # these lines are indetical 
     if post:
-        return render_template('singlepost.html', post=post)
+        return render_template('singlepost.html', post=post, like_count = len(post.likers2))
     else:
         return redirect(url_for('home_page'))
     
@@ -125,3 +127,63 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for('home_page'))
+
+# @app.route('/posts/like/<post_id>')
+# @login_required
+# def like_post(post_id):
+#     like = Like.query.filter_by(post_id=post_id).filter_by(user_id=current_user.id).first()
+#     if like:
+#         return redirect(url_for('home_page'))
+#     like = Like(current_user.id, post_id)
+#     db.session.add(like)
+#     db.session.commit()
+#     return redirect(url_for('home_page'))
+
+@app.route('/posts/like/<post_id>')
+@login_required
+def like_post2(post_id):
+    post = Post.query.get(post_id)
+    if post:
+        current_user.liked_posts2.append(post)
+        db.session.commit()
+    return redirect(url_for('home_page'))
+
+# @app.route('/posts/unlike/<post_id>')
+# @login_required
+# def unlike_post(post_id):
+#     like = Like.query.filter_by(post_id=post_id).filter_by(user_id=current_user.id).first()
+#     if like:
+#         db.session.delete(like)
+#         db.session.commit()
+#     return redirect(url_for('home_page'))
+
+@app.route('/posts/unlike/<post_id>')
+@login_required
+def unlike_post2(post_id):
+    post = current_user.liked_posts2.filter_by(id=post_id).first()
+    if post:
+        current_user.liked_posts2.remove(post) 
+        db.session.commit()
+    return redirect(url_for('home_page'))
+
+@app.route('/users')
+def users_page():
+    users = User.query.all()
+    return render_template('users.html', users=users)
+
+@app.route('/follow/<user_id>')
+@login_required
+def follow(user_id):
+    user = User.query.get(user_id)
+    current_user.followed.append(user)
+    db.session.commit()
+    return redirect(url_for('users_page'))
+
+@app.route('/unfollow/<user_id>')
+@login_required
+def unfollow(user_id):
+    user = current_user.followed.filter_by(id=user_id).first()
+    if user:
+        current_user.followed.remove(user)
+        db.session.commit()
+    return redirect(url_for('users_page'))
