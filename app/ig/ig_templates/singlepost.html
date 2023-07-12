@@ -17,7 +17,7 @@
 
             {% if current_user.is_authenticated %}
                     {% if current_user.id == post.user_id %}
-                        <a href='{{ url_for("update_post_page", post_id=post.id) }}' class="btn btn-primary">Update</a>
+                        <a href='{{ url_for("ig.update_post_page", post_id=post.id) }}' class="btn btn-primary">Update</a>
                         
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -37,7 +37,7 @@
                                 </div>
                                 <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <a class="btn btn-danger"  href="{{ url_for('delete_post', post_id=post.id) }}">Delete</a>
+                                <a class="btn btn-danger"  href="{{ url_for('ig.delete_post', post_id=post.id) }}">Delete</a>
                                 </div>
                             </div>
                             </div>

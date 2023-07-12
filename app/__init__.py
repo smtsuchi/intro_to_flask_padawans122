@@ -4,9 +4,13 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_moment import Moment
 from .models import db, User
+from .api import api
+from .ig import ig
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.register_blueprint(api)
+app.register_blueprint(ig)
 
 db.init_app(app)
 migrate = Migrate(app, db)

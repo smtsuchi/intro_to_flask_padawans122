@@ -4,7 +4,7 @@
     <main class="flex justify-content-center">
         {% for p in posts %}
             <div class="mx-auto pb-5" style="width: 18rem;">
-                <a class="card text-dark text-decoration-none "  href="{{ url_for('single_post_page', post_id=p.id) }}">
+                <a class="card text-dark text-decoration-none "  href="{{ url_for('ig.single_post_page', post_id=p.id) }}">
                     <img src="{{ p.img_url }}" class="card-img-top" alt="...">
                     <div class="card-body">
                     <h5 class="card-title">{{ p.title }}</h5>
@@ -18,11 +18,11 @@
                     </div>
                 </a>
                 {% if current_user in p.likers2 %}
-                    <a href="{{ url_for('unlike_post2', post_id=p.id) }}" class="my-heart">
+                    <a href="{{ url_for('ig.unlike_post2', post_id=p.id) }}" class="my-heart">
                         <i class="fa-solid fa-heart"></i>
                     </a>
                 {% else %}
-                    <a href="{{ url_for('like_post2', post_id=p.id) }}" class="my-heart">
+                    <a href="{{ url_for('ig.like_post2', post_id=p.id) }}" class="my-heart">
                         <i class="fa-regular fa-heart"></i>
                     </a>
                 {% endif %}

@@ -7,9 +7,9 @@
                 {% if u.id != current_user.id %}
                     <li class="list-group-item">{{ u.username }}
                         {% if u in current_user.followed.all() %}
-                            <a href='{{ url_for("unfollow", user_id=u.id) }}' class="btn btn-danger">Unfollow</a>
+                            <a href='{{ url_for("ig.unfollow", user_id=u.id) }}' class="btn btn-danger">Unfollow</a>
                         {% else %}
-                            <a href='{{ url_for("follow", user_id=u.id) }}' class="btn btn-primary">Follow</a>
+                            <a href='{{ url_for("ig.follow", user_id=u.id) }}' class="btn btn-primary">Follow</a>
                         {% endif %}
                     </li>
                 {% endif %}
