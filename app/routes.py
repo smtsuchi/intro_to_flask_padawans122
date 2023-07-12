@@ -3,7 +3,7 @@ from app import app
 from .forms import LoginForm, SignUpForm
 from .models import User, db
 from flask_login import login_user, logout_user
-
+from werkzeug.security import check_password_hash
 ## AUTHENTICATION
 
 @app.route('/login', methods=["GET", "POST"])
@@ -18,7 +18,7 @@ def login_page():
             user = User.query.filter_by(username=username).first()
 
             if user:
-                if user.password == password:
+                if check_password_hash(user.password, password):
                     login_user(user)
                     flash('Successfully logged in.', 'success')
                     return redirect(url_for('ig.home_page'))
