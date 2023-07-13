@@ -12,9 +12,10 @@
     {{ form.confirm_password(class='form-control', placeholder='Confirm Password') }}
     {{ form.submit(class='btn btn-primary') }}
 </form>
+{% endblock %}
 
 
 
-
-
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
 {% endblock %}
