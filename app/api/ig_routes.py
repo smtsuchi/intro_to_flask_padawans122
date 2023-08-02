@@ -1,10 +1,10 @@
 from flask import request
 from . import api
-from ..models import Post, db
+from ..models import User, Post, db
 
 @api.get('/posts')
 def get_all_posts_API():
-    posts = Post.query.all()
+    posts = Post.query.order_by(Post.date_created.desc()).all()
     return {
         'status': 'ok',
         'results': len(posts),
@@ -48,3 +48,34 @@ def create_post_api():
             'status': 'not ok',
             'message': "Not enough info provided to create a post."
         }, 400
+    
+@api.post('/posts/like/<post_id>')
+# @login_required
+def like_post_API(post_id):
+    post = Post.query.get(post_id)
+    data = request.json
+    user_id = data['user_id']
+    current_user = User.query.get(user_id)
+    if post:
+        current_user.liked_posts2.append(post)
+        db.session.commit()
+    return {
+        "status": 'ok',
+        "message": "You have succesfullly liked the post."
+    }
+
+@api.post('/posts/unlike/<post_id>')
+# @login_required
+def unlike_post_API(post_id):
+    data = request.json
+    user_id = data['user_id']
+    current_user = User.query.get(user_id)
+    post = current_user.liked_posts2.filter_by(id=post_id).first()
+    if post:
+        current_user.liked_posts2.remove(post) 
+        db.session.commit()
+    return {
+        "status": 'ok',
+        "message": "You have succesfullly unliked the post."
+    }
+

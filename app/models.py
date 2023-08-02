@@ -32,6 +32,9 @@ class User(db.Model, UserMixin):
         self.email = email
         self.password = generate_password_hash(password)
 
+    def __repr__(self):
+        return {self.username}
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -51,7 +54,7 @@ class Post(db.Model):
     def like_count(self):
         return len(self.likers2)
     
-    def to_dict(self):
+    def to_dict(self, user=None):
         return {
             'id': self.id,
             'title': self.title,
@@ -60,7 +63,9 @@ class Post(db.Model):
             'date_created': self.date_created,
             'user_id': self.user_id,
             'author': self.author.username,
-            'like_count': self.like_count()
+            'like_count': self.like_count(),
+            # 'liked': user in self.likers2
+            'liked': False
         }
 
 like2 = db.Table('like2',
