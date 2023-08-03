@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash
+from secrets import token_hex
 
 db = SQLAlchemy()
 followers = db.Table('followers',
@@ -17,6 +18,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String, nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     posts = db.relationship("Post", backref='author', lazy=True)
+    token = db.Column(db.String, unique=True)
     # liked_posts = db.relationship("Post", secondary='like')
     liked_posts2 = db.relationship("Post", secondary='like2', lazy = 'dynamic')
     followed = db.relationship("User",
@@ -31,9 +33,18 @@ class User(db.Model, UserMixin):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password)
-
-    def __repr__(self):
-        return {self.username}
+        self.token = token_hex(16)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'date_created': self.date_created,
+            'token': self.token,
+            'follower_count': len(self.followers.all()),
+            'following_count': len(self.followed.all()),
+        }
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -64,8 +75,7 @@ class Post(db.Model):
             'user_id': self.user_id,
             'author': self.author.username,
             'like_count': self.like_count(),
-            # 'liked': user in self.likers2
-            'liked': False
+            'liked': user in self.likers2
         }
 
 like2 = db.Table('like2',
