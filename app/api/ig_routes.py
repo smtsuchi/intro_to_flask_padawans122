@@ -25,11 +25,18 @@ def get_all_posts_API():
 @api.get('/posts/<post_id>')
 def get_a_post_API(post_id):
     post = Post.query.get(post_id)
+    user = None
+    if "Authorization" in request.headers:
+            val = request.headers['Authorization']
+            type, token = val.split()
+            if type == "Bearer":
+                token = token
+                user = User.query.filter_by(token=token).first()
     if post:
         return {
             'status': 'ok',
             'results': 1,
-            'post': post.to_dict()
+            'post': post.to_dict(user)
         }, 200
     return {
         'status': 'not ok',
