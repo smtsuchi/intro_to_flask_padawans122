@@ -91,3 +91,36 @@ like2 = db.Table('like2',
 #     def __init__(self, user_id, post_id):
 #         self.user_id = user_id
 #         self.post_id = post_id
+
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_name = db.Column(db.String(100), nullable=False)
+    img_url = db.Column(db.String, nullable=False)
+    description = db.Column(db.String(500))
+    price = db.Column(db.Numeric(10,2))
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+
+    def __init__(self, product_name, description, img_url, price):
+        self.product_name = product_name
+        self.description = description
+        self.img_url = img_url
+        self.price = price
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'product_name': self.product_name,
+            'description': self.description,
+            'img_url': self.img_url,
+            'price': self.price,
+            'date_created': self.date_created,
+        }
+    
+class Cart(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id', ondelete="CASCADE"), nullable=False)
+
+    def __init__(self, user_id, product_id):
+        self.user_id = user_id
+        self.product_id = product_id
