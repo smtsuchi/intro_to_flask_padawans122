@@ -1,7 +1,11 @@
-from flask import request
+from flask import request, redirect
 from . import api
 from ..models import Cart, Product, db
 from ..apiauthhelper import token_auth_required
+import stripe
+import os
+
+stripe.api_key = os.environ.get('STRIPE_API_KEY')
 
 @api.get('/products')
 def get_all_products_API():
@@ -65,3 +69,25 @@ def get_cart(user):
         'status': 'ok',
         'cart': cart
     }, 200
+
+
+
+FRONTEND_URL = 'http://localhost:5173'
+
+@api.post('/checkout')
+def stripe_checkout():
+    try:
+        data = request.form
+        line_items = []
+        for price in data:
+            line_items.append({'price': price, "quantity": data[price]})
+        checkout_session = stripe.checkout.Session.create(
+            line_items=line_items,
+            mode='payment',
+            success_url=FRONTEND_URL + '?success=true',
+            cancel_url=FRONTEND_URL + '?canceled=true',
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
